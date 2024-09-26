@@ -50,8 +50,8 @@ public class ChunkyRenderer implements Renderer {
   }*/
 
     Chunky.addRenderer(
-            new BetterRenderManager(
-                    new RenderContext(),
+            (se.llbit.chunky.renderer.Renderer) new BetterRenderManager(
+                    new RenderContext(new FileBufferRenderContext().getChunky()),
             false));
   }
 
