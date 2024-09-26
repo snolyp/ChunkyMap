@@ -35,9 +35,9 @@ import se.llbit.log.Log;
  * The main class.
  */
 public class ChunkyMapPlugin extends JavaPlugin {
-  private Plugin dynmap;
 
-  @Override
+
+    @Override
   public void onLoad() {
     Log.setReceiver(new ChunkyLogAdapter(getLogger()), se.llbit.log.Level.ERROR,
         se.llbit.log.Level.WARNING, se.llbit.log.Level.INFO);
@@ -45,12 +45,14 @@ public class ChunkyMapPlugin extends JavaPlugin {
 
   @Override
   public void onEnable() {
-    dynmap = Bukkit.getPluginManager().getPlugin("dynmap");
+      Plugin dynmap = Bukkit.getPluginManager().getPlugin("dynmap");
     try (InputStream mapIcon = getResource("rs-map-icon.png")) {
-      Path iconPath = Paths
+        assert dynmap != null;
+        Path iconPath = Paths
           .get(dynmap.getDataFolder().getAbsolutePath(), "web", "images", "block_chunky.png");
       if (!iconPath.toFile().exists()) {
-        Files.copy(mapIcon, iconPath);
+          assert mapIcon != null;
+          Files.copy(mapIcon, iconPath);
       }
     } catch (IOException e) {
       getLogger().log(Level.WARNING, "Could not write chunky map icon", e);

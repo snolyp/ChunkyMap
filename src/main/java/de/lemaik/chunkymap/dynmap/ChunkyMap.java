@@ -9,9 +9,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -33,7 +35,6 @@ import se.llbit.json.JsonNumber;
 import se.llbit.json.JsonObject;
 import se.llbit.json.JsonParser;
 
-import static de.lemaik.chunkymap.ChunkyMapPlugin.*;
 
 /**
  * A map that uses the RenderService for rendering the tiles.
@@ -44,7 +45,7 @@ public class ChunkyMap extends HDMap {
   public final DynmapCameraAdapter cameraAdapter;
   private final Renderer renderer;
   private File defaultTexturepackPath;
-  private File[] resourcepackPaths;
+  private final File[] resourcepackPaths;
   private File worldPath;
   private final Object worldPathLock = new Object();
   private JsonObject templateScene;
@@ -130,10 +131,9 @@ public class ChunkyMap extends HDMap {
     }
 
     if (config.containsKey("templateScene")) {
-      try (InputStream inputStream = new FileInputStream(
-          Bukkit.getPluginManager().getPlugin("dynmap").getDataFolder().toPath()
+      try (InputStream inputStream = Files.newInputStream(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("dynmap")).getDataFolder().toPath()
               .resolve(config.getString("templateScene"))
-              .toFile())) {
+              .toFile().toPath())) {
         templateScene = new JsonParser(inputStream).parse().asObject();
         templateScene.remove("world");
         templateScene.set("spp", new JsonNumber(0));

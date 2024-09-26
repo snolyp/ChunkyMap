@@ -1,7 +1,7 @@
 package de.lemaik.chunkymap.rendering.local;
 
-import de.lemaik.chunky.denoiser.DenoisedPathTracingRenderer;
-import de.lemaik.chunky.denoiser.DenoiserSettings;
+import de.lemaik.chunky.denoiser.BetterRenderManager;
+//import de.lemaik.chunky.denoiser.DenoiserSettings;
 import de.lemaik.chunkymap.ChunkyMapPlugin;
 import de.lemaik.chunkymap.rendering.FileBufferRenderContext;
 import de.lemaik.chunkymap.rendering.RenderException;
@@ -10,6 +10,7 @@ import de.lemaik.chunkymap.rendering.SilentTaskTracker;
 import net.time4tea.oidn.OidnImages;
 import se.llbit.chunky.PersistentSettings;
 import se.llbit.chunky.main.Chunky;
+import se.llbit.chunky.renderer.RenderContext;
 import se.llbit.chunky.renderer.RenderManager;
 import se.llbit.chunky.renderer.SnapshotControl;
 import se.llbit.chunky.renderer.scene.PathTracer;
@@ -43,9 +44,15 @@ public class ChunkyRenderer implements Renderer {
   private final int cpuLoad;
 
   static {
-    Chunky.addRenderer(new DenoisedPathTracingRenderer(
+  /*  Chunky.addRenderer(new DenoisedPathTracingRenderer(
             new DenoiserSettings(), new Oidn4jDenoiser(),
             "DenoisedPathTracer", "DenoisedPathTracer", "DenoisedPathTracer", new PathTracer()));
+  }*/
+
+    Chunky.addRenderer(
+            new BetterRenderManager(
+                    new RenderContext(),
+            false));
   }
 
   public ChunkyRenderer(int targetSpp, boolean enableDenoiser, int albedoTargetSpp,
@@ -59,7 +66,7 @@ public class ChunkyRenderer implements Renderer {
 
     PersistentSettings.changeSettingsDirectory(
         new File(ChunkyMapPlugin.getPlugin(ChunkyMapPlugin.class).getDataFolder(), "chunky"));
-    PersistentSettings.setLoadPlayers(false);
+    PersistentSettings.setLoadPlayers(true);
     PersistentSettings.setDisableDefaultTextures(true);
   }
 
@@ -93,7 +100,7 @@ public class ChunkyRenderer implements Renderer {
 
     String texturepackPaths = this.getTexturepackPaths(texturepacks);
     if (!texturepackPaths.equals(previousTexturepacks)) {
-      TexturePackLoader.loadTexturePacks(texturepackPaths, false);
+      //TexturePackLoader.loadTexturePacks(texturepackPaths, false);
       previousTexturepacks = texturepackPaths;
     }
 

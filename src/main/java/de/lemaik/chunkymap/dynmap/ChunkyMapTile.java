@@ -31,6 +31,8 @@ import se.llbit.chunky.world.World.LoggedWarnings;
 import se.llbit.util.ProgressListener;
 import se.llbit.util.TaskTracker;
 
+import static org.bukkit.Bukkit.getLogger;
+
 public class ChunkyMapTile extends HDMapTile {
   public ChunkyMapTile(DynmapWorld world, HDPerspective perspective, int tx, int ty, int boostzoom, int tilescale) {
     super(world, perspective, tx, ty, boostzoom, tilescale);
@@ -166,7 +168,7 @@ public class ChunkyMapTile extends HDMapTile {
       }).get();
       return true;
     } catch (Exception e) {
-      ChunkyMapPlugin.getPlugin(ChunkyMapPlugin.class).getLogger()
+      getLogger()
           .log(Level.WARNING, "Rendering tile " + tx + "_" + ty + " failed", e);
 
       if (map.getRequeueFailedTiles()) {
