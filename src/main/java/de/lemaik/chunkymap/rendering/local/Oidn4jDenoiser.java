@@ -1,15 +1,15 @@
 package de.lemaik.chunkymap.rendering.local;
 
-import de.lemaik.chunky.denoiser.Denoiser;
+import de.lemaik.chunky.denoiser.DenoiserPlugin;
 import net.time4tea.oidn.Oidn;
 import net.time4tea.oidn.OidnDevice;
 import net.time4tea.oidn.OidnFilter;
 
 import java.nio.FloatBuffer;
 
-public class Oidn4jDenoiser implements Denoiser {
+public class Oidn4jDenoiser extends DenoiserPlugin {
     @Override
-    public float[] denoise(int width, int height, float[] beauty, float[] albedo, float[] normal) throws DenoisingFailedException {
+    public float[] denoise(int width, int height, float[] beauty, float[] albedo, float[] normal) throws Exception {
         FloatBuffer albedoBuffer = Oidn.Companion.allocateBuffer(width, height);
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
@@ -28,7 +28,6 @@ public class Oidn4jDenoiser implements Denoiser {
         }
 
         FloatBuffer buffer = Oidn.Companion.allocateBuffer(width, height);
-        // TODO use multiple threads for post-processing
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 buffer.put((y * width + x) * 3, (float) Math.min(1.0, beauty[(y * width + x) * 3 + 0]));
@@ -42,7 +41,6 @@ public class Oidn4jDenoiser implements Denoiser {
             try (OidnFilter filter = device.raytraceFilter()) {
                 filter.setFilterImage(buffer, buffer, width, height);
                 if (albedo != null) {
-                    // albedo is required if normal is set
                     filter.setAdditionalImages(albedoBuffer, normalBuffer, width, height);
                 }
                 filter.commit();

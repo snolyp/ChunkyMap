@@ -1,7 +1,6 @@
 package de.lemaik.chunkymap.rendering.local;
 
 import de.lemaik.chunky.denoiser.BetterRenderManager;
-//import de.lemaik.chunky.denoiser.DenoiserSettings;
 import de.lemaik.chunkymap.ChunkyMapPlugin;
 import de.lemaik.chunkymap.rendering.FileBufferRenderContext;
 import de.lemaik.chunkymap.rendering.RenderException;
@@ -13,11 +12,9 @@ import se.llbit.chunky.main.Chunky;
 import se.llbit.chunky.renderer.RenderContext;
 import se.llbit.chunky.renderer.RenderManager;
 import se.llbit.chunky.renderer.SnapshotControl;
-import se.llbit.chunky.renderer.scene.PathTracer;
 import se.llbit.chunky.renderer.scene.Scene;
 import se.llbit.chunky.renderer.scene.SynchronousSceneManager;
 import se.llbit.chunky.resources.BitmapImage;
-import se.llbit.chunky.resources.TexturePackLoader;
 import se.llbit.util.TaskTracker;
 
 import java.awt.*;
@@ -43,16 +40,24 @@ public class ChunkyRenderer implements Renderer {
   private final int threads;
   private final int cpuLoad;
 
+//  static {
+////   Chunky.addRenderer(new DenoisedPathTracingRenderer(
+////            new DenoiserSettings(), new Oidn4jDenoiser(),
+////            "DenoisedPathTracer", "DenoisedPathTracer", "DenoisedPathTracer", new PathTracer()));
+////  }
+//    RenderContext renderContext = new RenderContext(new FileBufferRenderContext().getChunky());
+//    boolean headless = false;
+//    BetterRenderManager betterRenderManager = new BetterRenderManager(renderContext, headless);
+//
+//    Chunky.addRenderer(betterRenderManager);
+//
+//  }
   static {
-  /*  Chunky.addRenderer(new DenoisedPathTracingRenderer(
-            new DenoiserSettings(), new Oidn4jDenoiser(),
-            "DenoisedPathTracer", "DenoisedPathTracer", "DenoisedPathTracer", new PathTracer()));
-  }*/
+    RenderContext renderContext = new RenderContext(new FileBufferRenderContext().getChunky());
+    boolean headless = false;
+    BetterRenderManagerAdapter betterRenderManagerAdapter = new BetterRenderManagerAdapter(renderContext, headless);
 
-    Chunky.addRenderer(
-            (se.llbit.chunky.renderer.Renderer) new BetterRenderManager(
-                    new RenderContext(new FileBufferRenderContext().getChunky()),
-            false));
+    Chunky.addRenderer(betterRenderManagerAdapter);
   }
 
   public ChunkyRenderer(int targetSpp, boolean enableDenoiser, int albedoTargetSpp,
